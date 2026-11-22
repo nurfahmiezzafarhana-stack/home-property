@@ -5,6 +5,8 @@
 // ============================================================
 
 export const FPS = 30;
+// Placeholder music off: the trending sound is added in the TikTok app.
+export const USE_MUSIC = false;
 export const WIDTH = 1080;
 export const HEIGHT = 1920;
 
@@ -12,8 +14,8 @@ export const listing = {
   price: 'RM350,000',
   area: 'Pangsapuri Harmoni Elmina 1',
   city: 'City of Elmina, Shah Alam',
-  phone: '01X XXX XXXX', // [NO. TELEFON] — belum diberi
-  agent: '[NAMA EJEN]', // belum diberi
+  phone: '011-6364 8721',
+  agent: 'Farhana',
   specs: ['1,000 sqft', '3 Bilik', '2 Bilik Air', '2 Parking', 'Freehold'],
   extras: ['Partial furnished + aircond', 'Akses DASH, GCE & LATAR'],
   perks: ['Loan bank & lawyer boleh dibantu', 'First home buyer dialu-alukan'],
@@ -23,6 +25,7 @@ export type Move = 'push-in' | 'pull-out' | 'pan-left' | 'pan-right' | 'walk';
 
 export type Scene = {
   id: string;
+  kind?: 'photo' | 'map'; // 'map' = vector location map (photo ignored)
   photo: string; // file in public/photos
   photo2?: string; // optional second photo -> split screen
   dur: number; // seconds
@@ -48,6 +51,7 @@ export const scenes: Scene[] = [
   {id: 'flexi', photo: 'flexi-room.jpg', dur: 2.0, move: 'pan-left', label: 'Bilik 3', caption: 'Bilik ketiga boleh buat santai'},
   {id: 'bath', photo: 'bath-brown.jpg', photo2: 'bath-green.jpg', dur: 2.4, move: 'push-in', label: '2 Bilik Air', caption: 'Dua bilik air siap shower'},
   {id: 'laundry', photo: 'laundry.jpg', dur: 2.0, move: 'pan-right', label: 'Laundry', caption: 'Ruang laundry pun lapang'},
+  {id: 'location', kind: 'map', photo: 'living-hero.jpg', dur: 3.0, move: 'push-in', label: 'Lokasi', caption: 'Akses mudah DASH, GCE & LATAR', highlight: ['DASH,', 'GCE', 'LATAR']},
   // CTA line is drawn by each design's CTA card (VO: "Nak tengok sendiri? Call saya sekarang.")
   {id: 'cta', photo: 'living-hero.jpg', dur: 4.6, move: 'pull-out', caption: ''},
 ];

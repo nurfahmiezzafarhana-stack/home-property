@@ -2,6 +2,7 @@ import React from 'react';
 import {AbsoluteFill, Sequence, useVideoConfig} from 'remotion';
 import {scenes, sceneStarts, Scene} from '../data';
 import {PhotoMove, SplitPhotos} from './Photo';
+import {MapScene} from './MapScene';
 
 // Lays every scene on the timeline. Designs plug in:
 //  - wrap: per-shot transition wrapper (zoom punch, wipe, …)
@@ -19,7 +20,9 @@ export const Tour: React.FC<{
     <AbsoluteFill style={{backgroundColor: '#000'}}>
       {scenes.map((s, i) => {
         const d = Math.round(s.dur * fps);
-        const photo = s.photo2 ? (
+        const photo = s.kind === 'map' ? (
+          <MapScene durationInFrames={d} />
+        ) : s.photo2 ? (
           <SplitPhotos a={s.photo} b={s.photo2} durationInFrames={d} />
         ) : (
           <PhotoMove src={s.photo} move={s.move} durationInFrames={d} />

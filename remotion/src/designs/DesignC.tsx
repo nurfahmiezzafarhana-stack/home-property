@@ -111,6 +111,8 @@ export const DesignC: React.FC = () => {
     {at: 0.9, file: 'pop.wav', volume: 0.35},
     ...cutTimes().map((t) => ({at: t - 0.08, file: 'whoosh-soft.wav', volume: 0.45})),
     {at: sceneStart('bath') + 10 / FPS, file: 'shutter.wav', volume: 0.45},
+    {at: sceneStart('location') + 0.32, file: 'pop.wav', volume: 0.6},
+    ...[16, 22, 28].map((f) => ({at: sceneStart('location') + f / FPS, file: 'click.wav', volume: 0.5})),
     {at: sceneStart('cta') + 0.15, file: 'whoosh.wav', volume: 0.35},
     {at: sceneStart('cta') + 0.75, file: 'ding.wav', volume: 0.4},
   ];
