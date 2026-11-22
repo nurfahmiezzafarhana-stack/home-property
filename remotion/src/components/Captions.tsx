@@ -2,7 +2,7 @@ import React from 'react';
 import {spring, useCurrentFrame, useVideoConfig, interpolate} from 'remotion';
 import {buildChunks} from '../data';
 
-export type CaptionStyle = 'A' | 'B' | 'C';
+export type CaptionStyle = 'A' | 'B' | 'C' | 'D';
 
 const chunks = buildChunks();
 
@@ -41,6 +41,25 @@ export const Captions: React.FC<{variant: CaptionStyle; top?: number}> = ({varia
             const active = t >= w.start && t < w.end + 0.04;
             return (
               <span key={i} style={{color: active || w.accent ? '#FFE500' : '#fff'}}>
+                {w.text}
+                {i < chunk.words.length - 1 ? ' ' : ''}
+              </span>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  if (variant === 'D') {
+    const o = interpolate(local, [0, 6], [0, 1], {extrapolateRight: 'clamp'});
+    return (
+      <div style={{position: 'absolute', top: y - 40, left: 60, right: 240, padding: '40px 60px', textAlign: 'center', opacity: o, background: 'radial-gradient(ellipse 62% 58% at 50% 50%, rgba(0,0,0,.62), rgba(0,0,0,0) 100%)'}}>
+        <div style={{fontFamily: 'Playfair Display', fontStyle: 'italic', fontWeight: 600, fontSize: 64, lineHeight: 1.12, color: '#F5EFE3', textShadow: '0 2px 3px rgba(0,0,0,.7), 0 6px 28px rgba(0,0,0,.75)'}}>
+          {chunk.words.map((w, i) => {
+            const active = t >= w.start && t < w.end + 0.04;
+            return (
+              <span key={i} style={{color: active || w.accent ? '#E2C27D' : '#F5EFE3'}}>
                 {w.text}
                 {i < chunk.words.length - 1 ? ' ' : ''}
               </span>

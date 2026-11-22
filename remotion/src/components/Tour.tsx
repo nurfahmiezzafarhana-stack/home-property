@@ -13,7 +13,8 @@ export const Tour: React.FC<{
   label?: (scene: Scene, index: number) => React.ReactNode;
   overlay?: (scene: Scene, durationInFrames: number) => React.ReactNode;
   grade?: React.CSSProperties;
-}> = ({wrap, label, overlay, grade}) => {
+  mapTheme?: 'light' | 'dark';
+}> = ({wrap, label, overlay, grade, mapTheme}) => {
   const {fps} = useVideoConfig();
   const starts = sceneStarts();
   return (
@@ -21,7 +22,7 @@ export const Tour: React.FC<{
       {scenes.map((s, i) => {
         const d = Math.round(s.dur * fps);
         const photo = s.kind === 'map' ? (
-          <MapScene durationInFrames={d} />
+          <MapScene durationInFrames={d} theme={mapTheme} />
         ) : s.photo2 ? (
           <SplitPhotos a={s.photo} b={s.photo2} durationInFrames={d} />
         ) : (
