@@ -9,12 +9,14 @@ export const WIDTH = 1080;
 export const HEIGHT = 1920;
 
 export const listing = {
-  price: 'RM XXX,XXX', // [HARGA]
-  area: '[KAWASAN]', // e.g. taman / residensi name
-  city: '[BANDAR]', // e.g. Shah Alam
-  phone: '01X XXX XXXX', // [NO. TELEFON]
-  agent: '[NAMA EJEN]',
-  specs: ['3 Bilik', '2 Bilik Air', 'Fully Renovated'],
+  price: 'RM350,000',
+  area: 'Pangsapuri Harmoni Elmina 1',
+  city: 'City of Elmina, Shah Alam',
+  phone: '01X XXX XXXX', // [NO. TELEFON] — belum diberi
+  agent: '[NAMA EJEN]', // belum diberi
+  specs: ['1,000 sqft', '3 Bilik', '2 Bilik Air', '2 Parking', 'Freehold'],
+  extras: ['Partial furnished + aircond', 'Akses DASH, GCE & LATAR'],
+  perks: ['Loan bank & lawyer boleh dibantu', 'First home buyer dialu-alukan'],
 };
 
 export type Move = 'push-in' | 'pull-out' | 'pan-left' | 'pan-right' | 'walk';
@@ -36,13 +38,13 @@ export type Scene = {
 // DROPPED as repetitive: tv-room.jpg (same room as flexi-room.jpg).
 export const scenes: Scene[] = [
   {id: 'hook', photo: 'living-hero.jpg', dur: 3.2, move: 'push-in', caption: ''},
-  {id: 'living', photo: 'living-tv.jpg', dur: 2.2, move: 'pan-left', label: 'Ruang Tamu', caption: 'Ruang tamu luas dan terang'},
-  {id: 'dining', photo: 'living-sofa.jpg', dur: 2.0, move: 'pan-right', label: 'Ruang Makan', caption: 'Siap ada ruang makan family'},
-  {id: 'kitchen', photo: 'kitchen-galley.jpg', dur: 2.4, move: 'walk', label: 'Dapur', caption: 'Dapur full built-in kabinet'},
-  {id: 'kitchen2', photo: 'kitchen-u.jpg', dur: 2.0, move: 'push-in', caption: 'Lengkap oven, hob dan hood'},
+  {id: 'living', photo: 'living-tv.jpg', dur: 2.2, move: 'pan-left', label: 'Ruang Tamu', caption: 'Ruang tamu luas siap aircond'},
+  {id: 'dining', photo: 'living-sofa.jpg', dur: 2.0, move: 'pan-right', label: 'Ruang Makan', caption: 'Partial furnished, terus boleh masuk'},
+  {id: 'kitchen', photo: 'kitchen-galley.jpg', dur: 2.4, move: 'walk', label: 'Dapur', caption: 'Dapur cantik dah siap renovate'},
+  {id: 'kitchen2', photo: 'kitchen-u.jpg', dur: 2.0, move: 'push-in', caption: 'Kemas dan dijaga dengan baik'},
   {id: 'corridor', photo: 'corridor.jpg', dur: 1.8, move: 'walk', caption: 'Jom tengok bilik pula'},
-  {id: 'bed1', photo: 'bedroom-main.jpg', dur: 2.2, move: 'pull-out', label: 'Bilik Utama', caption: 'Bilik utama muat katil queen'},
-  {id: 'bed2', photo: 'bedroom-2.jpg', dur: 2.0, move: 'push-in', label: 'Bilik 2', caption: 'Bilik kedua ada sudut study'},
+  {id: 'bed1', photo: 'bedroom-main.jpg', dur: 2.2, move: 'pull-out', label: 'Bilik Utama', caption: 'Bilik utama luas dan terang'},
+  {id: 'bed2', photo: 'bedroom-2.jpg', dur: 2.0, move: 'push-in', label: 'Bilik 2', caption: 'Bilik kedua sesuai untuk anak'},
   {id: 'flexi', photo: 'flexi-room.jpg', dur: 2.0, move: 'pan-left', label: 'Bilik 3', caption: 'Bilik ketiga boleh buat santai'},
   {id: 'bath', photo: 'bath-brown.jpg', photo2: 'bath-green.jpg', dur: 2.4, move: 'push-in', label: '2 Bilik Air', caption: 'Dua bilik air siap shower'},
   {id: 'laundry', photo: 'laundry.jpg', dur: 2.0, move: 'pan-right', label: 'Laundry', caption: 'Ruang laundry pun lapang'},
@@ -67,7 +69,7 @@ export const TOTAL_FRAMES = Math.round(TOTAL_SEC * FPS);
 export const hooks = {
   A: {kicker: listing.area, title: listing.price, sub: listing.city, vo: `Rumah siap renovate, harga ${listing.price} je dekat ${listing.city}. Jom tengok!`},
   B: {line1: 'POV:', line2: 'Jumpa rumah', line3: 'SIAP RENOVATE', line4: 'tinggal bawa beg je 🧳'},
-  C: {eyebrow: 'Untuk Dijual', title: 'Tak perlu\nrenovate\nlagi.', price: listing.price},
+  C: {eyebrow: 'Untuk Dijual · Elmina', title: 'Tak perlu\nrenovate\nlagi.', price: listing.price},
 };
 
 // ---- caption chunking (TikTok style: 2–3 words per card, word-by-word highlight)

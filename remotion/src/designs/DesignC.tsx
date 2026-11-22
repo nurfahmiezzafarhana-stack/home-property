@@ -72,11 +72,12 @@ const CtaC: React.FC = () => {
   return (
     <AbsoluteFill>
       <AbsoluteFill style={{background: 'rgba(31,42,34,.35)'}} />
-      <div style={{position: 'absolute', left: 120, right: 192, top: 400, ...rise(frame, 4, 120)}}>
-        <div style={{background: '#F6F4EE', borderRadius: 36, padding: '54px 56px 50px', boxShadow: '0 30px 80px rgba(0,0,0,.35)'}}>
-          <div style={{fontFamily: 'DM Sans', fontWeight: 700, fontSize: 28, letterSpacing: 7, color: '#7C8F70', textTransform: 'uppercase'}}>
-            {listing.area} · {listing.city}
+      <div style={{position: 'absolute', left: 120, right: 192, top: 330, ...rise(frame, 4, 120)}}>
+        <div style={{background: '#F6F4EE', borderRadius: 36, padding: '44px 48px 40px', boxShadow: '0 30px 80px rgba(0,0,0,.35)'}}>
+          <div style={{fontFamily: 'DM Sans', fontWeight: 700, fontSize: 26, letterSpacing: 4, color: '#7C8F70', textTransform: 'uppercase'}}>
+            {listing.area}
           </div>
+          <div style={{fontFamily: 'DM Sans', fontWeight: 500, fontSize: 28, color: '#5b6358', marginTop: 4}}>{listing.city}</div>
           <div style={{fontFamily: 'DM Serif Display', fontSize: 104, color: INK, lineHeight: 1.05, marginTop: 10}}>{listing.price}</div>
           <div style={{display: 'flex', gap: 10, marginTop: 22, flexWrap: 'wrap'}}>
             {listing.specs.map((s) => (
@@ -85,8 +86,16 @@ const CtaC: React.FC = () => {
               </div>
             ))}
           </div>
-          <div style={{height: 1.5, background: '#D8D6CC', margin: '36px 0 30px'}} />
-          <div style={{fontFamily: 'DM Sans', fontWeight: 500, fontSize: 32, color: '#5b6358', ...rise(frame, 14, 16)}}>Nak tengok sendiri? Hubungi</div>
+          <div style={{marginTop: 22, ...rise(frame, 10, 16)}}>
+            {listing.perks.map((p) => (
+              <div key={p} style={{fontFamily: 'DM Sans', fontWeight: 600, fontSize: 28, color: INK, marginTop: 6}}>
+                <span style={{color: '#6E8B5E', marginRight: 12}}>✓</span>
+                {p}
+              </div>
+            ))}
+          </div>
+          <div style={{height: 1.5, background: '#D8D6CC', margin: '28px 0 24px'}} />
+          <div style={{fontFamily: 'DM Sans', fontWeight: 500, fontSize: 32, color: '#5b6358', ...rise(frame, 14, 16)}}>WhatsApp untuk info & viewing</div>
           <div style={{fontFamily: 'DM Sans', fontWeight: 700, fontSize: 76, color: INK, ...rise(frame, 18, 16)}}>{listing.phone}</div>
           <div style={{fontFamily: 'DM Sans', fontWeight: 500, fontSize: 32, color: '#5b6358', ...rise(frame, 22, 16)}}>{listing.agent}</div>
         </div>
