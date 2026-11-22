@@ -1,0 +1,14 @@
+import '@fontsource/montserrat/700.css';
+import '@fontsource/montserrat/900.css';
+import '@fontsource/playfair-display/500.css';
+import '@fontsource/playfair-display/600.css';
+import '@fontsource/playfair-display/700.css';
+import '@fontsource/playfair-display/600-italic.css';
+import '@fontsource/poppins/600.css';
+import '@fontsource/poppins/800.css';
+import '@fontsource/poppins/800-italic.css';
+import '@fontsource/poppins/900.css';
+import '@fontsource/dm-sans/500.css';
+import '@fontsource/dm-sans/600.css';
+import '@fontsource/dm-sans/700.css';
+import '@fontsource/dm-serif-display/400.css';
