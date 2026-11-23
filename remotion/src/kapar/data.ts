@@ -41,7 +41,7 @@ export type Shot =
   | {id: string; kind: 'image'; dur: number; zoom?: [number, number]; x?: [number, number]}
   | {id: string; kind: 'map'; dur: number};
 
-// Storyboard (21.5 s). Source footage: drone1 = slow orbit of the site,
+// Storyboard (23.5 s). Source footage: drone1 = slow orbit of the site,
 // drone2 = slow forward push along the site, render.jpg = finished house.
 // Slow 20 s drone takes are sped up 2–3x (removes the dead, repetitive time).
 export const shots: Shot[] = [
@@ -54,11 +54,11 @@ export const shots: Shot[] = [
   // PACKAGE — render, slow pan across the row of houses
   {id: 'package', kind: 'image', dur: 4.0, zoom: [1.15, 1.2], x: [15, 85]},
   // SPECS — forward drone push
-  {id: 'specs', kind: 'video', src: 'drone2', from: 9.0, rate: 1.6, dur: 3.0, zoom: [1.0, 1.15], x: [50, 50]},
+  {id: 'specs', kind: 'video', src: 'drone2', from: 9.0, rate: 1.6, dur: 3.5, zoom: [1.0, 1.15], x: [50, 50]},
   // MAP — facilities & highways
   {id: 'map', kind: 'map', dur: 3.5},
   // CTA — render, wide
-  {id: 'cta', kind: 'image', dur: 4.5, zoom: [1.12, 1.0], x: [28, 28]},
+  {id: 'cta', kind: 'image', dur: 6.0, zoom: [1.12, 1.0], x: [28, 28]},
 ];
 
 export const starts = () => {

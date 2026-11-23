@@ -129,7 +129,7 @@ const K1Overlay: React.FC<{id: string}> = ({id}) => {
           <div style={{...SAFE, top: 300}}>
             <div style={{...rise(f, 0, 16), fontFamily: 'Montserrat', fontWeight: 900, fontSize: 56, color: '#202124'}}>Lokasi Strategik</div>
           </div>
-          <div style={{...SAFE, top: 1120, display: 'flex', flexWrap: 'wrap', gap: 10}}>
+          <div style={{...SAFE, top: 385, display: 'flex', flexWrap: 'wrap', gap: 10}}>
             {project.access.map((a, i) => (
               <div key={a} style={{...rise(f, 40 + i * 4, 14), fontFamily: 'Montserrat', fontWeight: 700, fontSize: 26, color: W, background: '#202124', borderRadius: 999, padding: '8px 18px'}}>{a}</div>
             ))}

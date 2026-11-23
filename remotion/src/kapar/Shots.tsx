@@ -2,6 +2,7 @@ import React from 'react';
 import {AbsoluteFill, Easing, Img, interpolate, OffthreadVideo, Sequence, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Shot, shots, starts} from './data';
 import {MapKapar} from './MapKapar';
+import {MapReal} from './MapReal';
 
 const lerp = (f: number, d: number, a?: [number, number], def = 0) =>
   a ? interpolate(f, [0, d], a, {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.bezier(0.33, 0, 0.67, 1)}) : def;
@@ -9,7 +10,7 @@ const lerp = (f: number, d: number, a?: [number, number], def = 0) =>
 const ShotView: React.FC<{shot: Shot; d: number; mapTheme: 'light' | 'dark'}> = ({shot, d, mapTheme}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
-  if (shot.kind === 'map') return <MapKapar durationInFrames={d} theme={mapTheme} />;
+  if (shot.kind === 'map') return mapTheme === 'light' ? <MapReal durationInFrames={d} /> : <MapKapar durationInFrames={d} theme={mapTheme} />;
   const zoom = lerp(f, d, shot.zoom, 1);
   const x = lerp(f, d, shot.x, 50);
   const rot = shot.kind === 'video' ? lerp(f, d, shot.rot, 0) : 0;

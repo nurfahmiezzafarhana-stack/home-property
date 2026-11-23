@@ -22,16 +22,16 @@ Komponen yang dianalisis frame by frame (30 fps):
 **Buang yang berulang:** kedua-dua drone sangat perlahan dan berulang (20 s pergerakan sama), jadi
 dipercepat 1.6–3× dan cuma bahagian terbaik diambil. Tiada jeda janggal (tiada suara).
 
-## Storyboard (21.5 s, grid beat 120 BPM / 0.5 s)
+## Storyboard (23.5 s, grid beat 120 BPM / 0.5 s) — design dipilih: **K1 Cinematic**
 | # | Masa | Shot | Teknik (dari rujukan) | Teks |
 |---|---|---|---|---|
 | 1 | 0.0–2.0 | drone2 2.5× | **berpusing −14° + speed ramp** | HOOK: "Booking RM500 je, dapat rumah teres freehold?" |
 | 2 | 2.0–4.5 | render | **whip + lens flare** (tanah → rumah siap) | Rumah Teres 1-Tingkat · Dibuka untuk pendaftaran |
 | 3 | 4.5–6.5 | drone1 3× | orbit dipercepat | Tok Muda, Kapar · 5km dari Pekan Kapar |
 | 4 | 6.5–10.5 | render pan | pan merentas deretan rumah | Pakej: 5 tick, satu setiap beat |
-| 5 | 10.5–13.5 | drone2 1.6× | push ke depan | Spesifikasi: 5 baris, satu setiap beat |
-| 6 | 13.5–17.0 | peta | pin jatuh, lebuh raya dilukis | Kemudahan + WCE / NKVE / Federal / Shah Alam / Setia Alam |
-| 7 | 17.0–21.5 | render | whip + flare | Harga dari RM346,500 · Booking RM500 · WhatsApp |
+| 5 | 10.5–14.0 | drone2 1.6× | push ke depan | Spesifikasi: 5 baris, satu setiap beat |
+| 6 | 14.0–17.5 | **peta sebenar** | pin jatuh, zoom keluar macam app peta | Kemudahan dekat → WCE / NKVE / Federal, Klang, Setia Alam, Shah Alam |
+| 7 | 17.5–23.5 | render | whip + flare | Harga dari RM346,500 · Booking RM500 · WhatsApp |
 
 ## SFX
 impact (hook, CTA) · whoosh setiap cut · shimmer masa reveal · pop setiap tick pakej · klik setiap baris spec ·
@@ -42,7 +42,17 @@ pop pin peta · riser sebelum CTA · ding di hujung. Muzik: trending sound ditam
 - **K2 Promo Bold:** gaya promo pelancaran. Sticker kuning/merah, "RM500" slam + gegar, tick hijau, starburst harga.
 - **K3 Luxe Gold:** keluarga Noir Gold. Film grade, bingkai emas, serif, peta gelap.
 
+## Peta (geografi sebenar)
+Data: **OpenStreetMap** (© OpenStreetMap contributors, ODbL — kredit dipaparkan dalam video).
+- Lokasi projek, Pekan Kapar, SK Tok Muda, SMK Tengku Idris Shah, Klinik Kesihatan Kapar, Hospital Kapar (dalam pembinaan): koordinat dari Nominatim.
+- Lebuh raya (WCE E32, NKVE E1, Federal FT2, Jalan Kapar FT5, KESAS/E5) dan jalan utama: dari OpenStreetMap; segmen disambung ikut urutan geografi.
+- Garis pantai: `@geo-maps/earth-lands-10m` (terbitan OpenStreetMap, ketepatan ~1 km, hanya nampak dalam zoom luas).
+- Tiada dalam OpenStreetMap, jadi tidak dipin: Masjid Al-Ehsan, Klinik Kesihatan Tok Muda, Stesen ECRL Kapar, Sek Men Islam Hira'.
+- Data mentah: `remotion/scripts/osm-data/`; janakan semula `remotion/src/kapar/mapData.ts` dengan `scripts/osm-to-map.py`.
+
+## Hyperframes
+`hyperframes-kapar/` — K1 dijana dari `remotion/src/kapar/{data,mapData}.ts` oleh `build.mts`. `hyperframes check`: 0 error.
+
 ## Perlu disahkan
-- No. telefon & nama ejen: guna **011-6364 8721 / Farhana** (dari listing sebelum ni).
-- Peta: ilustrasi, bukan skala. Kedudukan WCE / NKVE / Federal / Shah Alam / Setia Alam ialah anggaran arah.
+- No. telefon & nama ejen: **011-6364 8721 / Farhana** (disahkan).
 - Rizab Melayu: ditulis seperti dalam info.

@@ -1,6 +1,6 @@
 """Convert an Overpass JSON export into a compact map-data module for MapKapar.
 
-Usage: python3 -I scripts/osm-to-map.py roads.json pois.json src/kapar/mapData.ts
+Usage: python3 -I scripts/osm-to-map.py src/kapar/mapData.ts pois.json layer1.json [layer2.json ...]
 
 Projects lon/lat with Web Mercator into a local metre grid centred on the
 project site, simplifies each line (Douglas-Peucker) and writes SVG path
@@ -49,17 +49,50 @@ def path(pts):
     return 'M' + 'L'.join(f'{x:.0f} {y:.0f}' for x, y in pts)
 
 
-def main(roads_file, pois_file, out_file):
-    els = json.load(open(roads_file))['elements']
+def main(out_file, pois_file, *road_files):
+    land_files = [f for f in road_files if 'land' in f]
+    road_files = [f for f in road_files if 'land' not in f]
+    els = [e for rf in road_files for e in json.load(open(rf))['elements']]
+    land = []
+    for lf in land_files:  # list of polygons, each [exterior, *holes] in lon/lat; holes dropped
+        for poly in json.load(open(lf)):
+            pts = [proj(x, y) for x, y in poly[0]]
+            land.append(path(pts) + 'Z')
     groups = {'motorway': [], 'trunk': [], 'primary': [], 'secondary': [], 'coast': [], 'river': []}
     eps = {'motorway': 25, 'trunk': 25, 'primary': 30, 'secondary': 35, 'coast': 60, 'river': 40}
+    named = {}  # highway ref/name -> list of (x, y) midpoints, for labels
     for e in els:
         t = e.get('tags', {})
-        g = t.get('highway') or ('coast' if t.get('natural') == 'coastline' else 'river' if t.get('waterway') == 'river' else None)
+        g = t.get('highway') or ('coast' if (t.get('natural') == 'coastline' or not t) else 'river' if t.get('waterway') == 'river' else None)
         if g not in groups or 'geometry' not in e:
             continue
         pts = [proj(p['lon'], p['lat']) for p in e['geometry']]
+        if g == 'motorway_link':
+            continue
         groups[g].append(path(dp(pts, eps[g])))
+        key = t.get('ref') or t.get('name')
+        if g in ('motorway', 'trunk') and key:
+            named.setdefault(key, []).extend(dp(pts, 300))
+    # Sea polygon: for each 250 m row, the mainland coast is the easternmost
+    # coastline crossing west of x=+4 km; everything west of it is sea.
+    segs = []
+    for e in els:
+        if e.get('tags', {}).get('natural') == 'coastline' or (not e.get('tags') and 'geometry' in e):
+            pts = [proj(p['lon'], p['lat']) for p in e['geometry']]
+            segs += list(zip(pts, pts[1:]))
+    sea = ''
+    if segs:
+        rows = []
+        prev = None
+        for yy in range(-30000, 40001, 250):
+            xs = [x1 + (yy - y1) * (x2 - x1) / (y2 - y1) for (x1, y1), (x2, y2) in segs if (y1 - yy) * (y2 - yy) < 0]
+            xs = [x for x in xs if x < 4000]
+            x = max(xs) if xs else prev
+            if x is not None:
+                rows.append((x, yy))
+                prev = x
+        if rows:
+            sea = f'M -90000 {rows[0][1]} ' + ' '.join(f'L {x:.0f} {y}' for x, y in rows) + f' L -90000 {rows[-1][1]} Z'
     pois = json.load(open(pois_file))
     places = {k: proj(v[0], v[1]) for k, v in pois.items()}
     with open(out_file, 'w') as f:
@@ -67,8 +100,11 @@ def main(roads_file, pois_file, out_file):
         f.write('// Units: metres from the project site (Jalan Benteng Kanan), y down.\n')
         f.write('export const roads = ' + json.dumps(groups) + ' as const;\n')
         f.write('export const places: Record<string, [number, number]> = ' + json.dumps(places) + ';\n')
+        f.write('export const seaPoly: string = ' + json.dumps(sea) + ';\n')
+        f.write('export const land: string[] = ' + json.dumps(land) + ';\n')
+        f.write('export const hwLabels: Record<string, [number, number][]> = ' + json.dumps(named) + ';\n')
     print({k: len(v) for k, v in groups.items()}, 'places', len(places))
 
 
 if __name__ == '__main__':
-    main(*sys.argv[1:4])
+    main(*sys.argv[1:])
