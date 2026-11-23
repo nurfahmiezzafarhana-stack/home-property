@@ -9,7 +9,7 @@ const browserExecutable = fs.existsSync('/opt/pw-browsers/chromium_headless_shel
 const ids = process.argv[2] ? process.argv[2].split(',') : ['DesignA-Luxe', 'DesignB-Pop', 'DesignC-Minimal'];
 const serveUrl = await bundle({entryPoint: path.resolve('src/index.ts')});
 // hook build-up, one frame inside every shot, CTA build-up
-const frames = [4, 20, 45, 90, 110, 175, 235, 300, 360, 420, 480, 540, 600, 680, 740, 790, 830, 850, 870, 900, 930, 950];
+const frames = process.env.FRAMES ? process.env.FRAMES.split(',').map(Number) : [4, 20, 45, 90, 110, 175, 235, 300, 360, 420, 480, 540, 600, 680, 740, 790, 830, 850, 870, 900, 930, 950];
 for (const id of ids) {
   const comp = await selectComposition({serveUrl, id, browserExecutable});
   const dir = path.resolve('preview', id);
