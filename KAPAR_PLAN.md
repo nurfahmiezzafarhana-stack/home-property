@@ -56,3 +56,17 @@ Data: **OpenStreetMap** (© OpenStreetMap contributors, ODbL — kredit dipapark
 ## Perlu disahkan
 - No. telefon & nama ejen: **011-6364 8721 / Farhana** (disahkan).
 - Rizab Melayu: ditulis seperti dalam info.
+
+## Voiceover (v3)
+Skrip (dikemas dari teks yang diberi; captions ikut ayat ini):
+1. Hook — "Okey, kalau korang tengah cari rumah area Kapar, boleh tengok yang ni."
+2. Reveal — "Projek baru dekat Tok Muda, Kapar."
+3. Orbit — "Lebih kurang 5km dari Pekan Kapar."
+4. Pakej — "Booking bermula RM500, dan ada pakej rebate serta beberapa legal fees yang ditanggung oleh pemaju, tertakluk pada terma semasa."
+5. Spesifikasi — "Rumah ni hak milik kekal, Rizab Melayu, saiz tanah 20 x 64, ada 4 bilik tidur dan 2 bilik air."
+6. (Peta — tiada VO, SFX sahaja)
+7. CTA — "Kalau nak tengok full details, kelayakan dan kira anggaran, boleh DM atau komen “nak”."
+
+Suara: **AI sementara** (Meta MMS-TTS Bahasa Melayu `facebook/mms-tts-zlm`, lesen CC-BY-NC 4.0 — untuk preview;
+ganti dengan rakaman sendiri untuk post komersial). Jana semula: `HF_HUB_DISABLE_XET=1 python3 -I remotion/scripts/gen-vo.py`.
+Setiap babak dipanjangkan ikut ayatnya (video 38.1 s). Item pakej & spesifikasi muncul tepat bila disebut.

@@ -27,7 +27,6 @@ export const project = {
   ],
   facilities: ['Masjid Al-Ehsan', 'SRA & SK Tok Muda', 'SMK Tengku Idris', 'Klinik Kesihatan', 'Stesen ECRL Kapar', 'Hospital Kapar', '99 Speedmart'],
   access: ['WCE', 'NKVE', 'Federal Highway', 'Shah Alam', 'Setia Alam'],
-  // Contact carried over from the previous listing — confirm before final render
   phone: '011-6364 8721',
   agent: 'Farhana',
 };
@@ -36,30 +35,46 @@ export const project = {
 // added in the TikTok app lines up with the edit.
 export const BEAT = 0.5;
 
-export type Shot =
-  | {id: string; kind: 'video'; src: 'drone1' | 'drone2'; from: number; rate: number; dur: number; rot?: [number, number]; zoom?: [number, number]; x?: [number, number]}
-  | {id: string; kind: 'image'; dur: number; zoom?: [number, number]; x?: [number, number]}
-  | {id: string; kind: 'map'; dur: number};
+import {vo} from './vo.ts';
 
-// Storyboard (23.5 s). Source footage: drone1 = slow orbit of the site,
+export type Base = {id: string; dur: number; vo?: string; span?: number};
+export type Shot = Base &
+  (
+    | {kind: 'video'; src: 'drone1' | 'drone2'; from: number; rate: number; rot?: [number, number]; zoom?: [number, number]; x?: [number, number]}
+    | {kind: 'image'; zoom?: [number, number]; x?: [number, number]}
+    | {kind: 'map'}
+  );
+
+// Voiceover: each line starts VO_LEAD s into its scene; scenes are sized to fit
+// their line (+ tail). `span` = the overlay/VO continues over the next N shots.
+export const VO_LEAD = 0.15;
+const fit = (line: string, tail = 0.35) => Math.ceil((vo[line].dur + VO_LEAD + tail) * 10) / 10;
+
+// Storyboard (~37 s with VO). Source footage: drone1 = slow orbit of the site,
 // drone2 = slow forward push along the site, render.jpg = finished house.
-// Slow 20 s drone takes are sped up 2–3x (removes the dead, repetitive time).
+// No source range is used twice: drone2 0–10 s (hook) / 10–15.5 s (specs),
+// drone1 0–9.6 s (orbit) / 10–14.5 s (specs, 2nd half).
 export const shots: Shot[] = [
-  // HOOK — overhead "twist" like the reference opener (rotating + speed-ramped)
-  {id: 'hook', kind: 'video', src: 'drone2', from: 1.0, rate: 2.5, dur: 2.0, rot: [0, -14], zoom: [1.7, 1.5], x: [50, 50]},
+  // HOOK — overhead "twist" like the reference opener (rotating + sped up)
+  {id: 'hook', kind: 'video', src: 'drone2', from: 0.0, rate: 2.0, dur: fit('hook'), vo: 'hook', rot: [0, -14], zoom: [1.7, 1.5], x: [50, 50]},
   // REVEAL — transformation: land -> finished house (whip + flare)
-  {id: 'reveal', kind: 'image', dur: 2.5, zoom: [1.0, 1.1], x: [30, 40]},
+  {id: 'reveal', kind: 'image', dur: fit('reveal'), vo: 'reveal', zoom: [1.0, 1.1], x: [30, 40]},
   // LOCATION — orbit of the site, sped up
-  {id: 'orbit', kind: 'video', src: 'drone1', from: 0.0, rate: 3.0, dur: 2.0, zoom: [1.0, 1.12], x: [40, 60]},
-  // PACKAGE — render, slow pan across the row of houses
-  {id: 'package', kind: 'image', dur: 4.0, zoom: [1.15, 1.2], x: [15, 85]},
-  // SPECS — forward drone push
-  {id: 'specs', kind: 'video', src: 'drone2', from: 9.0, rate: 1.6, dur: 3.5, zoom: [1.0, 1.15], x: [50, 50]},
-  // MAP — facilities & highways
+  {id: 'orbit', kind: 'video', src: 'drone1', from: 0.0, rate: 3.0, dur: fit('orbit'), vo: 'orbit', zoom: [1.0, 1.12], x: [40, 60]},
+  // PACKAGE — two crops of the render (left porch, right row) under one list
+  {id: 'package', kind: 'image', dur: 4.2, vo: 'package', span: 1, zoom: [1.35, 1.45], x: [8, 38]},
+  {id: 'package2', kind: 'image', dur: Math.max(3.0, fit('package') - 4.2), zoom: [1.25, 1.35], x: [70, 92]},
+  // SPECS — forward drone push, then the orbit's second half
+  {id: 'specs', kind: 'video', src: 'drone2', from: 10.0, rate: 1.2, dur: 4.6, vo: 'specs', span: 1, zoom: [1.0, 1.12], x: [50, 50]},
+  {id: 'specs2', kind: 'video', src: 'drone1', from: 10.0, rate: 1.0, dur: Math.max(3.0, fit('specs') - 4.6), zoom: [1.05, 1.15], x: [55, 45]},
+  // MAP — facilities & highways (no VO line: SFX only)
   {id: 'map', kind: 'map', dur: 3.5},
   // CTA — render, wide
-  {id: 'cta', kind: 'image', dur: 6.0, zoom: [1.12, 1.0], x: [28, 28]},
+  {id: 'cta', kind: 'image', dur: Math.max(6.0, fit('cta', 0.9)), vo: 'cta', zoom: [1.12, 1.0], x: [28, 28]},
 ];
+
+// Seconds (relative to the scene start) at which VO word `i` of `line` begins
+export const cue = (line: string, i: number) => VO_LEAD + vo[line].words[Math.min(i, vo[line].words.length - 1)].start;
 
 export const starts = () => {
   const out: number[] = [];
@@ -71,4 +86,12 @@ export const starts = () => {
   return out;
 };
 export const startOf = (id: string) => starts()[shots.findIndex((s) => s.id === id)];
-export const TOTAL = shots.reduce((a, s) => a + s.dur, 0);
+export const TOTAL = Math.round(shots.reduce((a, s) => a + s.dur, 0) * 30) / 30;
+// Overlay span (seconds) for a scene whose overlay continues over `span` shots
+export const spanDur = (id: string) => {
+  const i = shots.findIndex((s) => s.id === id);
+  return shots.slice(i, i + 1 + (shots[i].span ?? 0)).reduce((a, s) => a + s.dur, 0);
+};
+// Global caption words (karaoke)
+export const voWords = () =>
+  shots.flatMap((s) => (s.vo ? vo[s.vo].words.map((w) => ({...w, start: startOf(s.id) + VO_LEAD + w.start, end: startOf(s.id) + VO_LEAD + w.end})) : []));

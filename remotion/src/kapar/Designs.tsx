@@ -6,7 +6,8 @@
 //  K3 "Luxe Gold"  — Noir Gold family: film grade, gold frame, serif, dark map
 import React from 'react';
 import {AbsoluteFill, Easing, interpolate, random, spring, useCurrentFrame, useVideoConfig} from 'remotion';
-import {project, startOf, starts, TOTAL} from './data';
+import {cue, project, startOf, starts, TOTAL} from './data';
+import {KaraokeCaps, VoTrack} from './Voice';
 import {Flare, Timeline} from './Shots';
 import {SfxTrack, SfxCue} from '../components/Sfx';
 
@@ -17,15 +18,19 @@ const fade = (f: number, a: number, b: number, from = 0, to = 1) =>
 const rise = (f: number, d: number, dist = 40) => ({opacity: fade(f, d, d + 8), transform: `translateY(${fade(f, d, d + 12, dist, 0)}px)`});
 const SAFE: React.CSSProperties = {position: 'absolute', left: 120, right: 192};
 const cuts = () => starts().slice(1);
-const TICK = (i: number) => 9 + i * 15; // one item per beat (0.5 s)
+// List items appear when the voiceover says them (frames from scene start)
+const PKG_WORDS = [0, 6, 9, 10, 14]; // Booking, rebate, legal, fees, pemaju
+const SPEC_WORDS = [2, 7, 11, 13, 19]; // hak milik, saiz tanah, 64, 4 bilik, air
+const TICKP = (i: number) => Math.round(cue('package', PKG_WORDS[i]) * FPS);
+const TICKS = (i: number) => Math.round(cue('specs', SPEC_WORDS[i]) * FPS);
 
 // ---------- shared SFX map ----------
 const baseCues = (whoosh: string, vol: number): SfxCue[] => [
   {at: 0.0, file: 'impact.wav', volume: 0.85},
   ...cuts().map((t) => ({at: t - 0.12, file: whoosh, volume: vol})),
   {at: startOf('reveal'), file: 'shimmer.wav', volume: 0.5},
-  ...project.pkg.map((_, i) => ({at: startOf('package') + TICK(i) / FPS, file: 'pop.wav', volume: 0.55})),
-  ...project.specs.map((_, i) => ({at: startOf('specs') + TICK(i) / FPS, file: 'click.wav', volume: 0.55})),
+  ...project.pkg.map((_, i) => ({at: startOf('package') + TICKP(i) / FPS, file: 'pop.wav', volume: 0.55})),
+  ...project.specs.map((_, i) => ({at: startOf('specs') + TICKS(i) / FPS, file: 'click.wav', volume: 0.55})),
   {at: startOf('map') + 0.25, file: 'pop.wav', volume: 0.6},
   {at: startOf('cta') - 1.3, file: 'riser.wav', volume: 0.35},
   {at: startOf('cta') + 0.05, file: 'impact.wav', volume: 0.6},
@@ -72,8 +77,8 @@ const K1Overlay: React.FC<{id: string}> = ({id}) => {
     case 'reveal':
       return (
         <AbsoluteFill>
-          <AbsoluteFill style={{background: 'linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(0,0,0,.55) 45%,rgba(0,0,0,.7) 65%,rgba(0,0,0,.2) 85%)'}} />
-          <div style={{...SAFE, top: 880}}>
+          <AbsoluteFill style={{background: 'linear-gradient(180deg,rgba(0,0,0,.1) 15%,rgba(0,0,0,.62) 30%,rgba(0,0,0,.6) 50%,rgba(0,0,0,.45) 70%,rgba(0,0,0,.15) 90%)'}} />
+          <div style={{...SAFE, top: 620}}>
             <Eyebrow t="Projek Baru · Dibuka Untuk Pendaftaran" d={4} />
             <div style={{height: 14}} />
             <Big t="Rumah Teres" d={8} />
@@ -85,7 +90,7 @@ const K1Overlay: React.FC<{id: string}> = ({id}) => {
       return (
         <AbsoluteFill>
           <Shade />
-          <div style={{...SAFE, top: 960}}>
+          <div style={{...SAFE, top: 700}}>
             <Eyebrow t="📍 Tok Muda, Kapar" d={2} />
             <div style={{height: 10}} />
             <Big t="5km dari Pekan Kapar" d={6} size={70} />
@@ -100,11 +105,12 @@ const K1Overlay: React.FC<{id: string}> = ({id}) => {
             <Eyebrow t="Pakej Pembelian" d={0} />
             <div style={{height: 20}} />
             {project.pkg.map((p, i) => (
-              <div key={p} style={{...rise(f, TICK(i), 24), display: 'flex', gap: 18, alignItems: 'flex-start', marginTop: 18}}>
+              <div key={p} style={{...rise(f, TICKP(i), 24), display: 'flex', gap: 18, alignItems: 'flex-start', marginTop: 18}}>
                 <div style={{width: 44, height: 44, flex: '0 0 44px', borderRadius: 22, border: '2.5px solid #FFD27A', color: '#FFD27A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Montserrat', fontWeight: 900, fontSize: 24}}>✓</div>
                 <div style={{fontFamily: 'Montserrat', fontWeight: i === 0 ? 900 : 700, fontSize: i === 0 ? 46 : 38, lineHeight: 1.15, color: W, textShadow: '0 2px 12px rgba(0,0,0,.6)'}}>{p}</div>
               </div>
             ))}
+            <div style={{...rise(f, Math.round(cue('package', 15) * FPS), 10), marginTop: 22, fontFamily: 'Montserrat', fontWeight: 600, fontSize: 28, color: '#D8D8D8'}}>*Tertakluk pada terma semasa</div>
           </div>
         </AbsoluteFill>
       );
@@ -115,7 +121,7 @@ const K1Overlay: React.FC<{id: string}> = ({id}) => {
           <div style={{...SAFE, top: 330}}>
             <Eyebrow t="Spesifikasi" d={0} />
             {project.specs.map((s, i) => (
-              <div key={s.k} style={{...rise(f, TICK(i), 24), marginTop: 26, borderLeft: '3px solid #FFD27A', paddingLeft: 22}}>
+              <div key={s.k} style={{...rise(f, TICKS(i), 24), marginTop: 26, borderLeft: '3px solid #FFD27A', paddingLeft: 22}}>
                 <div style={{fontFamily: 'Montserrat', fontWeight: 600, fontSize: 24, letterSpacing: 3, color: '#D8D8D8', textTransform: 'uppercase'}}>{s.k}</div>
                 <div style={{fontFamily: 'Montserrat', fontWeight: 800, fontSize: 44, color: W}}>{s.v}</div>
               </div>
@@ -153,7 +159,8 @@ const CtaK1: React.FC = () => {
         <div style={{...rise(f, 9, 30), fontFamily: 'Montserrat', fontWeight: 900, fontSize: 118, color: W, letterSpacing: -2, lineHeight: 1}}>{project.priceFrom}</div>
         <div style={{...rise(f, 14, 20), display: 'inline-block', marginTop: 24, fontFamily: 'Montserrat', fontWeight: 900, fontSize: 42, color: '#1a1a1a', background: '#FFD27A', padding: '10px 28px', borderRadius: 999}}>Booking {project.booking} sahaja!</div>
         <div style={{...rise(f, 18, 16), fontFamily: 'Montserrat', fontWeight: 600, fontSize: 28, color: '#E8E8E8', marginTop: 24}}>Freehold · 4 Bilik · 2 Bilik Air</div>
-        <div style={{...rise(f, 24, 20), marginTop: 54, fontFamily: 'Montserrat', fontWeight: 700, fontSize: 26, letterSpacing: 5, color: '#FFD27A', textTransform: 'uppercase'}}>WhatsApp untuk daftar</div>
+        <div style={{...rise(f, 24, 20), marginTop: 46, fontFamily: 'Montserrat', fontWeight: 800, fontSize: 40, color: '#fff'}}>DM atau komen <span style={{color: '#1a1a1a', background: '#FFD27A', padding: '0 14px', borderRadius: 10}}>“NAK”</span></div>
+        <div style={{...rise(f, 26, 20), marginTop: 22, fontFamily: 'Montserrat', fontWeight: 700, fontSize: 26, letterSpacing: 5, color: '#FFD27A', textTransform: 'uppercase'}}>atau WhatsApp</div>
         <div style={{...rise(f, 27, 20), fontFamily: 'Montserrat', fontWeight: 900, fontSize: 76, color: W}}>{project.phone}</div>
         <div style={{...rise(f, 30, 16), fontFamily: 'Montserrat', fontWeight: 600, fontSize: 32, color: '#E8E8E8'}}>{project.agent}</div>
       </div>
@@ -166,7 +173,9 @@ export const K1Cinematic: React.FC = () => (
     <Timeline mapTheme="light" whipInto={['reveal', 'orbit', 'package', 'specs', 'cta']} grade={{filter: 'contrast(1.06) saturate(1.08)'}} overlay={(id) => <K1Overlay id={id} />} />
     <Flare at={startOf('reveal')} />
     <Flare at={startOf('cta')} />
-    <SfxTrack cues={baseCues('whoosh.wav', 0.5)} fps={FPS} />
+    <KaraokeCaps />
+    <VoTrack />
+    <SfxTrack cues={baseCues('whoosh.wav', 0.38)} fps={FPS} />
   </AbsoluteFill>
 );
 
@@ -250,7 +259,7 @@ const K2Overlay: React.FC<{id: string}> = ({id}) => {
             <Sticker t="PAKEJ MANTAP 🔥" bg={R} color="#fff" size={52} d={0} rot={-3} />
             <div style={{marginTop: 26}}>
               {project.pkg.map((p, i) => {
-                const s = spring({frame: f - TICK(i), fps, config: {damping: 10, stiffness: 200, mass: 0.6}});
+                const s = spring({frame: f - TICKP(i), fps, config: {damping: 10, stiffness: 200, mass: 0.6}});
                 return (
                   <div key={p} style={{display: 'flex', gap: 16, alignItems: 'center', marginTop: 16, transform: `translateX(${(1 - s) * -60}px)`, opacity: Math.min(1, s * 2)}}>
                     <div style={{width: 52, height: 52, flex: '0 0 52px', borderRadius: 26, background: '#22C55E', border: '4px solid #111', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Poppins', fontWeight: 900, fontSize: 30, transform: `scale(${s})`}}>✓</div>
@@ -268,7 +277,7 @@ const K2Overlay: React.FC<{id: string}> = ({id}) => {
           <AbsoluteFill style={{background: 'rgba(0,0,0,.4)'}} />
           <div style={{...SAFE, top: 310, display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'flex-start'}}>
             {project.specs.map((s, i) => (
-              <Sticker key={s.k} t={`${s.k}: ${s.v}`} bg={i % 2 ? '#fff' : Y} size={36} d={TICK(i)} rot={i % 2 ? 2 : -2} />
+              <Sticker key={s.k} t={`${s.k}: ${s.v}`} bg={i % 2 ? '#fff' : Y} size={36} d={TICKS(i)} rot={i % 2 ? 2 : -2} />
             ))}
           </div>
         </AbsoluteFill>
@@ -425,8 +434,8 @@ const K3Overlay: React.FC<{id: string}> = ({id}) => {
             <Cap t="Pakej Eksklusif" d={0} />
             {line(2)}
             {project.pkg.map((p, i) => (
-              <div key={p} style={{...rise(f, TICK(i), 20), marginTop: 22}}>
-                {i === 0 ? <GoldText t={p} size={58} d={TICK(i)} /> : <div style={{fontFamily: 'Playfair Display', fontStyle: 'italic', fontSize: 40, lineHeight: 1.2, color: IVORY}}>{p}</div>}
+              <div key={p} style={{...rise(f, TICKP(i), 20), marginTop: 22}}>
+                {i === 0 ? <GoldText t={p} size={58} d={TICKP(i)} /> : <div style={{fontFamily: 'Playfair Display', fontStyle: 'italic', fontSize: 40, lineHeight: 1.2, color: IVORY}}>{p}</div>}
               </div>
             ))}
           </div>
@@ -440,7 +449,7 @@ const K3Overlay: React.FC<{id: string}> = ({id}) => {
             <Cap t="Spesifikasi" d={0} />
             {line(2)}
             {project.specs.map((s, i) => (
-              <div key={s.k} style={{...rise(f, TICK(i), 20), marginTop: 22}}>
+              <div key={s.k} style={{...rise(f, TICKS(i), 20), marginTop: 22}}>
                 <div style={{fontFamily: 'Montserrat', fontWeight: 700, fontSize: 22, letterSpacing: 6, color: GOLD, textTransform: 'uppercase'}}>{s.k}</div>
                 <div style={{fontFamily: 'Playfair Display', fontWeight: 600, fontSize: 46, color: IVORY}}>{s.v}</div>
               </div>

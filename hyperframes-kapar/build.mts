@@ -4,13 +4,17 @@
 //   ../remotion/src/kapar/mapData.ts  (OpenStreetMap-derived geometry)
 // Run:  node --experimental-strip-types build.mts
 import fs from 'node:fs';
-import {project, shots, starts, TOTAL, startOf} from '../remotion/src/kapar/data.ts';
+import {project, shots, starts, TOTAL, startOf, spanDur, cue, voWords, VO_LEAD} from '../remotion/src/kapar/data.ts';
+import {vo} from '../remotion/src/kapar/vo.ts';
 import {roads, land, places, hwLabels} from '../remotion/src/kapar/mapData.ts';
 
 const r = (n: number) => Math.round(n * 1000) / 1000;
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 const st = starts();
-const TICK = (i: number) => (9 + i * 15) / 30;
+const PKG_WORDS = [0, 6, 9, 10, 14];
+const SPEC_WORDS = [2, 7, 11, 13, 19];
+const TICKP = (i: number) => cue('package', PKG_WORDS[i]);
+const TICKS = (i: number) => cue('specs', SPEC_WORDS[i]);
 const tw: string[] = []; // GSAP timeline lines
 const T = (s: string) => tw.push(s);
 let lane = 3;
@@ -102,17 +106,17 @@ project.access.forEach((_, i) => T(`tl.fromTo('#acc-${i}',{opacity:0,y:14},{opac
 const rise = (sel: string, t: number, dist = 40) => T(`tl.fromTo('${sel}',{opacity:0,y:${dist}},{opacity:1,y:0,duration:0.4,ease:'power3.out'},${r(t)});`);
 const ov = (id: string, inner: string, shade: string) => {
   const s = shots.find((x) => x.id === id)!;
-  return `<div id="ov-${id}" class="clip ov" data-start="${r(startOf(id))}" data-duration="${r(s.dur)}" data-track-index="1" style="z-index:${20}"><div class="shade" style="background:${shade}"></div>${inner}</div>`;
+  return `<div id="ov-${id}" class="clip ov" data-start="${r(startOf(id))}" data-duration="${r(spanDur(id))}" data-track-index="1" style="z-index:${20}"><div class="shade" style="background:${shade}"></div>${inner}</div>`;
 };
-const B = 'linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(0,0,0,.55) 45%,rgba(0,0,0,.7) 65%,rgba(0,0,0,.2) 85%)';
+const B = 'linear-gradient(180deg,rgba(0,0,0,.1) 15%,rgba(0,0,0,.62) 30%,rgba(0,0,0,.6) 50%,rgba(0,0,0,.45) 70%,rgba(0,0,0,.15) 90%)';
 const TOPD = 'linear-gradient(180deg,rgba(0,0,0,.7) 0%,rgba(0,0,0,.5) 60%,rgba(0,0,0,.15) 100%)';
 const overlays = [
   ov('hook', `<div class="txt" style="top:330px"><div id="h1" class="big" style="font-size:96px">Booking <span style="color:#FFD27A">RM500</span> je,</div><div id="h2" class="big" style="font-size:64px;font-weight:800;margin-top:10px">dapat rumah teres freehold?</div></div>`, 'linear-gradient(180deg,rgba(0,0,0,.6) 0%,rgba(0,0,0,.15) 45%,rgba(0,0,0,0) 60%)'),
-  ov('reveal', `<div class="txt" style="top:880px"><div id="r1" class="eyebrow">Projek Baru · Dibuka Untuk Pendaftaran</div><div style="overflow:hidden;margin-top:14px"><div id="r2" class="big">Rumah Teres</div></div><div style="overflow:hidden"><div id="r3" class="big">1-Tingkat</div></div></div>`, B),
-  ov('orbit', `<div class="txt" style="top:960px"><div id="o1" class="eyebrow">📍 Tok Muda, Kapar</div><div id="o2" class="big" style="font-size:70px;margin-top:10px">5km dari Pekan Kapar</div></div>`, 'linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.65) 75%)'),
-  ov('package', `<div class="txt" style="top:330px"><div id="p0" class="eyebrow">Pakej Pembelian</div>${project.pkg.map((p, i) => `<div id="pk-${i}" class="row"><span class="tick">✓</span><span style="font:${i === 0 ? 900 : 700} ${i === 0 ? 46 : 38}px/1.15 Montserrat">${esc(p)}</span></div>`).join('')}</div>`, TOPD),
+  ov('reveal', `<div class="txt" style="top:620px"><div id="r1" class="eyebrow">Projek Baru · Dibuka Untuk Pendaftaran</div><div style="overflow:hidden;margin-top:14px"><div id="r2" class="big">Rumah Teres</div></div><div style="overflow:hidden"><div id="r3" class="big">1-Tingkat</div></div></div>`, B),
+  ov('orbit', `<div class="txt" style="top:700px"><div id="o1" class="eyebrow">📍 Tok Muda, Kapar</div><div id="o2" class="big" style="font-size:70px;margin-top:10px">5km dari Pekan Kapar</div></div>`, 'linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.65) 75%)'),
+  ov('package', `<div class="txt" style="top:330px"><div id="p0" class="eyebrow">Pakej Pembelian</div>${project.pkg.map((p, i) => `<div id="pk-${i}" class="row"><span class="tick">✓</span><span style="font:${i === 0 ? 900 : 700} ${i === 0 ? 46 : 38}px/1.15 Montserrat">${esc(p)}</span></div>`).join('')}<div id="pk-note" style="margin-top:22px;font:600 28px Montserrat;color:#D8D8D8">*Tertakluk pada terma semasa</div></div>`, TOPD),
   ov('specs', `<div class="txt" style="top:330px"><div id="s0" class="eyebrow">Spesifikasi</div>${project.specs.map((s, i) => `<div id="sp-${i}" class="spec"><div class="k">${esc(s.k)}</div><div class="v">${esc(s.v)}</div></div>`).join('')}</div>`, TOPD),
-  ov('cta', `<div class="txt" style="top:330px;text-align:center"><div id="c1" class="eyebrow">Dibuka Untuk Pendaftaran</div><div id="c2" style="font:600 34px Montserrat;color:#E8E8E8;margin-top:34px">Harga dari</div><div id="c3" style="font:900 118px/1 Montserrat;color:#fff;letter-spacing:-2px">${project.priceFrom}</div><div id="c4" style="display:inline-block;margin-top:24px;font:900 42px Montserrat;color:#1a1a1a;background:#FFD27A;padding:10px 28px;border-radius:999px">Booking ${project.booking} sahaja!</div><div id="c5" style="font:600 28px Montserrat;color:#E8E8E8;margin-top:24px">Freehold · 4 Bilik · 2 Bilik Air</div><div id="c6" class="eyebrow" style="margin-top:54px">WhatsApp untuk daftar</div><div id="c7" style="font:900 76px Montserrat;color:#fff">${project.phone}</div><div id="c8" style="font:600 32px Montserrat;color:#E8E8E8">${project.agent}</div></div>`, 'linear-gradient(180deg,rgba(0,0,0,.7) 0%,rgba(0,0,0,.55) 55%,rgba(0,0,0,.2) 100%)'),
+  ov('cta', `<div class="txt" style="top:330px;text-align:center"><div id="c1" class="eyebrow">Dibuka Untuk Pendaftaran</div><div id="c2" style="font:600 34px Montserrat;color:#E8E8E8;margin-top:34px">Harga dari</div><div id="c3" style="font:900 118px/1 Montserrat;color:#fff;letter-spacing:-2px">${project.priceFrom}</div><div id="c4" style="display:inline-block;margin-top:24px;font:900 42px Montserrat;color:#1a1a1a;background:#FFD27A;padding:10px 28px;border-radius:999px">Booking ${project.booking} sahaja!</div><div id="c5" style="font:600 28px Montserrat;color:#E8E8E8;margin-top:24px">Freehold · 4 Bilik · 2 Bilik Air</div><div id="c6" style="margin-top:46px;font:800 40px Montserrat;color:#fff">DM atau komen <span style="color:#1a1a1a;background:#FFD27A;padding:0 14px;border-radius:10px">“NAK”</span></div><div id="c6b" class="eyebrow" style="margin-top:22px">atau WhatsApp</div><div id="c7" style="font:900 76px Montserrat;color:#fff">${project.phone}</div><div id="c8" style="font:600 32px Montserrat;color:#E8E8E8">${project.agent}</div></div>`, 'linear-gradient(180deg,rgba(0,0,0,.7) 0%,rgba(0,0,0,.55) 55%,rgba(0,0,0,.2) 100%)'),
 ].join('\n      ');
 const h = startOf('hook');
 T(`tl.fromTo('#h1',{opacity:0.5},{opacity:1,duration:0.2},${h});`);
@@ -121,10 +125,11 @@ rise('#h2', h + 0.27, 50);
 rise('#o1', startOf('orbit') + 0.07, 16);
 rise('#o2', startOf('orbit') + 0.2, 90);
 rise('#p0', startOf('package'), 16);
-project.pkg.forEach((_, i) => rise(`#pk-${i}`, startOf('package') + TICK(i), 24));
+project.pkg.forEach((_, i) => rise(`#pk-${i}`, startOf('package') + TICKP(i), 24));
+rise('#pk-note', startOf('package') + cue('package', 15), 10);
 rise('#s0', startOf('specs'), 16);
-project.specs.forEach((_, i) => rise(`#sp-${i}`, startOf('specs') + TICK(i), 24));
-['#c1', '#c2', '#c3', '#c4', '#c5', '#c6', '#c7', '#c8'].forEach((s, i) => rise(s, startOf('cta') + [0.07, 0.2, 0.3, 0.47, 0.6, 0.8, 0.9, 1.0][i], 20));
+project.specs.forEach((_, i) => rise(`#sp-${i}`, startOf('specs') + TICKS(i), 24));
+['#c1', '#c2', '#c3', '#c4', '#c5', '#c6', '#c6b', '#c7', '#c8'].forEach((s, i) => rise(s, startOf('cta') + [0.07, 0.2, 0.3, 0.47, 0.6, 0.8, 0.87, 0.9, 1.0][i], 20));
 
 // ---------- lens flares over the reveal and CTA cuts ----------
 const flares = ['reveal', 'cta']
@@ -139,10 +144,10 @@ const flares = ['reveal', 'cta']
 const DUR: Record<string, number> = {whoosh: 0.64, impact: 0.9, shimmer: 1.5, pop: 0.1, click: 0.04, riser: 1.4, ding: 1.0};
 const cues: [number, string, number][] = [
   [0, 'impact', 0.85],
-  ...st.slice(1).map((t) => [t - 0.12, 'whoosh', 0.5] as [number, string, number]),
+  ...st.slice(1).map((t) => [t - 0.12, 'whoosh', 0.38] as [number, string, number]),
   [startOf('reveal'), 'shimmer', 0.5],
-  ...project.pkg.map((_, i) => [startOf('package') + TICK(i), 'pop', 0.55] as [number, string, number]),
-  ...project.specs.map((_, i) => [startOf('specs') + TICK(i), 'click', 0.55] as [number, string, number]),
+  ...project.pkg.map((_, i) => [startOf('package') + TICKP(i), 'pop', 0.55] as [number, string, number]),
+  ...project.specs.map((_, i) => [startOf('specs') + TICKS(i), 'click', 0.55] as [number, string, number]),
   [startOf('map') + 0.25, 'pop', 0.6],
   [startOf('cta') - 1.3, 'riser', 0.35],
   [startOf('cta') + 0.05, 'impact', 0.6],
@@ -162,6 +167,34 @@ const audio = cues
     return `<audio id="sfx-${i}-${f}" class="clip" src="assets/sfx/${f}.wav" data-start="${r(at)}" data-duration="${r(d)}" data-track-index="${10 + l}" data-volume="${v}"></audio>`;
   })
   .join('\n      ');
+
+// ---------- voiceover + karaoke captions ----------
+const voAudio = shots
+  .filter((s) => s.vo)
+  .map((s) => `<audio id="vo-${s.vo}" class="clip" src="assets/vo/${s.vo}.wav" data-start="${r(startOf(s.id) + VO_LEAD)}" data-duration="${r(vo[s.vo!].dur)}" data-track-index="9" data-volume="1"></audio>`)
+  .join('\n      ');
+type CW = {text: string; start: number; end: number};
+const all: CW[] = voWords();
+const chunks: CW[][] = [];
+for (let i = 0; i < all.length; ) {
+  let j = i;
+  while (j + 1 < all.length && all[j + 1].start - all[j].end < 0.05) j++;
+  const line = all.slice(i, j + 1);
+  for (let k = 0; k < line.length; ) {
+    const rem = line.length - k;
+    const n = rem === 4 ? 2 : Math.min(3, rem);
+    chunks.push(line.slice(k, k + n));
+    k += n;
+  }
+  i = j + 1;
+}
+const caps = chunks
+  .map((c, k) => `<div id="cap-${k}" class="clip cap" data-start="${r(c[0].start)}" data-duration="${r(c[c.length - 1].end - c[0].start + 0.06)}">${c.map((w, j) => `<span id="cw-${k}-${j}">${esc(w.text)}</span>`).join(' ')}</div>`)
+  .join('\n        ');
+chunks.forEach((c, k) => {
+  T(`tl.fromTo('#cap-${k}',{scale:0.9},{scale:1,duration:0.1},${r(c[0].start)});`);
+  c.forEach((w, j) => T(`tl.set('#cw-${k}-${j}',{color:'#FFD27A'},${r(w.start)});tl.set('#cw-${k}-${j}',{color:'#fff'},${r(w.end + 0.04)});`));
+});
 
 const html = `<!doctype html>
 <html lang="ms" data-resolution="portrait">
@@ -186,6 +219,8 @@ const html = `<!doctype html>
       .spec { margin-top: 26px; border-left: 3px solid #FFD27A; padding-left: 22px; }
       .spec .k { font: 600 24px Montserrat; letter-spacing: 3px; color: #D8D8D8; text-transform: uppercase; }
       .spec .v { font: 800 44px Montserrat; color: #fff; }
+      .cap { position: absolute; top: 1120px; left: 120px; right: 192px; text-align: center; font: 900 64px/1.08 Montserrat; color: #fff; -webkit-text-stroke: 10px rgba(0,0,0,.85); paint-order: stroke fill; text-shadow: 0 4px 18px rgba(0,0,0,.5); }
+      #captions { position: absolute; inset: 0; pointer-events: none; }
       .flare { position: absolute; inset: 0; mix-blend-mode: screen; opacity: 0;
         background: radial-gradient(ellipse 55% 35% at 50% 40%, rgba(255,170,90,1) 0%, rgba(255,170,90,.35) 40%, rgba(0,0,0,0) 75%); }
     </style>
@@ -196,6 +231,10 @@ const html = `<!doctype html>
       ${mapHtml}
       ${overlays}
       ${flares}
+      <div id="captions" data-track-kind="captions" style="z-index:40">
+        ${caps}
+      </div>
+      ${voAudio}
       ${audio}
     </div>
     <script>

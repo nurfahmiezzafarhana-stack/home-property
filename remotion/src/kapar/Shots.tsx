@@ -1,6 +1,6 @@
 import React from 'react';
 import {AbsoluteFill, Easing, Img, interpolate, OffthreadVideo, Sequence, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
-import {Shot, shots, starts} from './data';
+import {Shot, shots, spanDur, starts} from './data';
 import {MapKapar} from './MapKapar';
 import {MapReal} from './MapReal';
 
@@ -81,7 +81,17 @@ export const Timeline: React.FC<{
                 <ShotView shot={s} d={d} mapTheme={mapTheme} />
               </Whip>
             </AbsoluteFill>
-            {overlay ? overlay(s.id, d) : null}
+          </Sequence>
+        );
+      })}
+      {/* overlays: one per scene, lasting over any shots it spans */}
+      {shots.map((s, i) => {
+        const covered = shots.slice(0, i).some((p, j) => (p.span ?? 0) >= i - j);
+        if (covered || !overlay) return null;
+        const d = Math.round(spanDur(s.id) * fps);
+        return (
+          <Sequence key={`ov-${s.id}`} from={Math.round(st[i] * fps)} durationInFrames={d} name={`ov-${s.id}`}>
+            {overlay(s.id, d)}
           </Sequence>
         );
       })}
