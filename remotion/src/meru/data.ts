@@ -35,7 +35,7 @@ export const shots: Shot[] = [
   {id: 'bath', kind: 'image', img: 'bath.jpg', dur: 2.0, zoom: [1.05, 1.15], x: [50, 50]},
   {id: 'package', kind: 'image', img: 'render.jpg', dur: 3.6, zoom: [1.0, 1.06], x: [45, 52]},
   {id: 'specs', kind: 'image', img: 'render.jpg', dur: 6.0, zoom: [1.0, 1.06], x: [90, 98]},
-  {id: 'map', kind: 'map', dur: 4.0},
+  {id: 'map', kind: 'map', dur: 5.0},
   {id: 'cta', kind: 'image', img: 'render.jpg', dur: 6.0, zoom: [1.12, 1.0], x: [20, 28]},
 ];
 

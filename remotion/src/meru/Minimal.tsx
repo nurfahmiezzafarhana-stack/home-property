@@ -65,7 +65,7 @@ const Photo: React.FC<{img: string; d: number; x: [number, number]; zoom: [numbe
 };
 const Index: React.FC<{n: string}> = ({n}) => {
   const f = useCurrentFrame();
-  return <div style={{position: 'absolute', top: CARD.top + CARD.height + 18, right: CARD.left, fontFamily: 'DM Sans', fontWeight: 500, fontSize: 28, color: GREY, letterSpacing: 2, opacity: fade(f, 6, 16)}}>{n}</div>;
+  return <div style={{position: 'absolute', top: CARD.top + CARD.height + 18, right: 300, fontFamily: 'DM Sans', fontWeight: 500, fontSize: 28, color: GREY, letterSpacing: 2, opacity: fade(f, 6, 16)}}>{n}</div>;
 };
 const Eyebrow: React.FC<{t: string; d?: number}> = ({t, d = 4}) => {
   const f = useCurrentFrame();
@@ -83,7 +83,7 @@ const Hair: React.FC<{d?: number}> = ({d = 10}) => {
   const f = useCurrentFrame();
   return <div style={{height: 2, width: fade(f, d, d + 18, 0, 120), background: INK, marginTop: 22}} />;
 };
-const Text: React.FC<{children: React.ReactNode; top?: number}> = ({children, top = TEXT_TOP}) => <div style={{position: 'absolute', left: CARD.left + 8, right: 192, top}}>{children}</div>;
+const Text: React.FC<{children: React.ReactNode; top?: number}> = ({children, top = TEXT_TOP}) => <div style={{position: 'absolute', left: 120, right: 300, top}}>{children}</div>;
 
 // ---------- scenes ----------
 const Scene: React.FC<{id: string; d: number}> = ({id, d}) => {
@@ -97,7 +97,7 @@ const Scene: React.FC<{id: string; d: number}> = ({id, d}) => {
           {photo}
           <Text>
             <div style={{fontFamily: 'DM Sans', fontWeight: 600, fontSize: 28, letterSpacing: 6, color: GREY, textTransform: 'uppercase'}}>Projek Baru · Meru, Klang</div>
-            <div style={{fontFamily: 'DM Serif Display', fontSize: 96, lineHeight: 1.02, color: INK, marginTop: 12}}>Booking RM1,000.</div>
+            <div style={{fontFamily: 'DM Serif Display', fontSize: 84, lineHeight: 1.02, color: INK, marginTop: 12}}>Booking RM1,000.</div>
             <Body t="Rumah teres & berkembar 1-tingkat, freehold." d={6} />
           </Text>
         </>
@@ -202,10 +202,10 @@ const Scene: React.FC<{id: string; d: number}> = ({id, d}) => {
           <MapReal durationInFrames={d} cfg={MONO_MAP} />
           <Text top={300}>
             <div style={{...rise(f, 0, 12), fontFamily: 'DM Serif Display', fontSize: 64, color: INK}}>Lokasi.</div>
-            <div style={{...rise(f, 50, 10), fontFamily: 'DM Sans', fontWeight: 600, fontSize: 28, color: '#4A4741', marginTop: 10, lineHeight: 1.45}}>
+            <div style={{...rise(f, 8, 10), fontFamily: 'DM Sans', fontWeight: 600, fontSize: 28, color: '#4A4741', marginTop: 10, lineHeight: 1.45}}>
               {project.access.join('  ·  ')}
             </div>
-            <div style={{...rise(f, 66, 10), fontFamily: 'DM Sans', fontWeight: 500, fontSize: 26, color: GREY, marginTop: 8, lineHeight: 1.45}}>{project.malls.join('  ·  ')}</div>
+            <div style={{...rise(f, 16, 10), fontFamily: 'DM Sans', fontWeight: 500, fontSize: 26, color: GREY, marginTop: 8, lineHeight: 1.45}}>{project.malls.join('  ·  ')}</div>
           </Text>
         </>
       );
@@ -214,11 +214,11 @@ const Scene: React.FC<{id: string; d: number}> = ({id, d}) => {
         <Text top={360}>
           <Eyebrow t="Projek Perumahan Baru" d={2} />
           <div style={{...rise(f, 6, 16), fontFamily: 'DM Sans', fontWeight: 500, fontSize: 34, color: GREY, marginTop: 40}}>Teres 1-tingkat dari</div>
-          <div style={{...rise(f, 9, 24), fontFamily: 'DM Serif Display', fontSize: 132, lineHeight: 1, color: INK}}>{project.priceFrom}</div>
+          <div style={{...rise(f, 9, 24), fontFamily: 'DM Serif Display', fontSize: 120, lineHeight: 1, color: INK}}>{project.priceFrom}</div>
           <div style={{...rise(f, 13, 16), fontFamily: 'DM Sans', fontWeight: 500, fontSize: 34, color: GREY, marginTop: 18}}>Berkembar dari RM516,420</div>
           <div style={{...rise(f, 16, 16), fontFamily: 'DM Sans', fontWeight: 700, fontSize: 40, color: INK, marginTop: 30}}>Booking {project.booking} sahaja.</div>
           <Hair d={20} />
-          <div style={{...rise(f, 24, 16), fontFamily: 'DM Sans', fontWeight: 700, fontSize: 84, color: INK, marginTop: 34, letterSpacing: 1}}>{project.phone}</div>
+          <div style={{...rise(f, 24, 16), fontFamily: 'DM Sans', fontWeight: 700, fontSize: 76, color: INK, marginTop: 34, letterSpacing: 1}}>{project.phone}</div>
           <div style={{...rise(f, 27, 12), fontFamily: 'DM Serif Display', fontSize: 48, color: GREY}}>{project.agent}</div>
         </Text>
       );
