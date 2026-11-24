@@ -1,6 +1,6 @@
 import React from 'react';
 import {AbsoluteFill, Easing, interpolate, spring, useCurrentFrame, useVideoConfig} from 'remotion';
-import {hwLabels, land, places, roads} from './mapData';
+import * as kaparData from './mapData';
 
 // Real-geography map (OpenStreetMap data, Google-Maps-like styling).
 // Units in mapData are metres from the project site, y down.
@@ -24,12 +24,25 @@ const STYLE = {
   sub: '#5F6368',
 };
 
+export type MapData = {roads: Record<string, readonly string[]>; land: string[]; places: Record<string, [number, number]>; hwLabels: Record<string, [number, number][]>};
+export type MapConfig = {
+  data: MapData;
+  close: [number, number, number]; // [centerX, centerY, widthMetres]
+  wide: [number, number, number];
+  facilities: {k: string; icon: string; label: string; dy: number; sub?: string}[];
+  towns: string[]; // shown in the wide view
+  nearTown?: string; // shown from the start (close view)
+  shields: [string, string, [number, number]][]; // [ref, label, target point]
+  pinTitle: string;
+  pinSub: string;
+};
+
 // [centerX, centerY, widthMetres]
 const CLOSE: [number, number, number] = [3100, -200, 10500];
 const WIDE: [number, number, number] = [10000, 4200, 27000];
 
 // dy: label nudge in px so neighbours around Pekan Kapar don't collide
-const FACILITIES: {k: string; icon: string; label: string; dy: number}[] = [
+const FACILITIES: MapConfig['facilities'] = [
   {k: 'SK Tok Muda', icon: '🏫', label: 'SK Tok Muda', dy: 40},
   {k: 'Klinik Kesihatan Kapar', icon: '🏥', label: 'Klinik Kesihatan', dy: -70},
   {k: 'SMK Tengku Idris Shah', icon: '🏫', label: 'SMK Tengku Idris', dy: 60},
@@ -44,7 +57,21 @@ const HW_SHIELDS: [string, string, [number, number]][] = [
   ['FT2', 'Federal', [17500, 6500]],
 ];
 
-export const MapReal: React.FC<{durationInFrames: number}> = ({durationInFrames}) => {
+export const KAPAR_MAP: MapConfig = {
+  data: kaparData as unknown as MapData,
+  close: CLOSE,
+  wide: WIDE,
+  facilities: FACILITIES,
+  towns: TOWNS,
+  nearTown: 'Pekan Kapar',
+  shields: HW_SHIELDS,
+  pinTitle: 'Projek Teres Tok Muda',
+  pinSub: 'Jalan Benteng Kanan, Kapar',
+};
+
+export const MapReal: React.FC<{durationInFrames: number; cfg?: MapConfig}> = ({durationInFrames, cfg = KAPAR_MAP}) => {
+  const {roads, land, places, hwLabels} = cfg.data;
+  const [CLOSE, WIDE] = [cfg.close, cfg.wide];
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const z = interpolate(f, [44, 84], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.inOut(Easing.cubic)});
@@ -85,18 +112,18 @@ export const MapReal: React.FC<{durationInFrames: number}> = ({durationInFrames}
       </svg>
 
       {/* towns (regional view) */}
-      {TOWNS.map((t) => {
+      {cfg.towns.map((t) => {
         const [x, y] = toPx(places[t]);
-        const o = t === 'Pekan Kapar' ? 1 : wideO;
+        const o = t === cfg.nearTown ? 1 : wideO;
         return (
-          <div key={t} style={{position: 'absolute', left: x, top: y + (t === 'Pekan Kapar' ? -20 : 0), transform: 'translate(-50%,-50%)', opacity: o, fontFamily: 'DM Sans', fontWeight: 700, fontSize: t === 'Pekan Kapar' ? 30 : 38, color: STYLE.ink, WebkitTextStroke: `7px ${STYLE.land}`, paintOrder: 'stroke fill', whiteSpace: 'nowrap'}}>
+          <div key={t} style={{position: 'absolute', left: x, top: y + (t === cfg.nearTown ? -20 : 0), transform: 'translate(-50%,-50%)', opacity: o, fontFamily: 'DM Sans', fontWeight: 700, fontSize: t === cfg.nearTown ? 30 : 38, color: STYLE.ink, WebkitTextStroke: `7px ${STYLE.land}`, paintOrder: 'stroke fill', whiteSpace: 'nowrap'}}>
             {t}
           </div>
         );
       })}
 
       {/* highway shields */}
-      {HW_SHIELDS.map(([ref, text, target]) => {
+      {cfg.shields.map(([ref, text, target]) => {
         const pts = hwLabels[ref];
         if (!pts || !pts.length) return null;
         const best = pts.reduce((a, b) => (Math.hypot(b[0] - target[0], b[1] - target[1]) < Math.hypot(a[0] - target[0], a[1] - target[1]) ? b : a));
@@ -109,13 +136,13 @@ export const MapReal: React.FC<{durationInFrames: number}> = ({durationInFrames}
       })}
 
       {/* facilities (close view) */}
-      {FACILITIES.map((p, i) => {
+      {cfg.facilities.map((p, i) => {
         if (!places[p.k]) return null;
         const [x, y] = toPx(places[p.k]);
         return (
           <div key={p.k} style={{position: 'absolute', left: x, top: y + p.dy, display: 'flex', alignItems: 'center', gap: 8, transform: 'translate(-22px,-50%)', opacity: facO(i)}}>
             <div style={{width: 44, height: 44, borderRadius: 22, background: '#5E7FA8', fontSize: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '3px solid #fff', boxShadow: '0 2px 6px rgba(0,0,0,.25)'}}>{p.icon}</div>
-            <div style={{fontFamily: 'DM Sans', fontWeight: 700, fontSize: 26, color: '#3C4043', WebkitTextStroke: `6px ${STYLE.land}`, paintOrder: 'stroke fill', whiteSpace: 'nowrap'}}>{p.label}</div>
+            <div style={{fontFamily: 'DM Sans', fontWeight: 700, fontSize: 26, color: '#3C4043', WebkitTextStroke: `6px ${STYLE.land}`, paintOrder: 'stroke fill', whiteSpace: 'nowrap'}}>{p.label}{p.sub ? <span style={{color: '#1A73E8'}}> · {p.sub}</span> : null}</div>
           </div>
         );
       })}
@@ -127,8 +154,8 @@ export const MapReal: React.FC<{durationInFrames: number}> = ({durationInFrames}
         <circle cx="23" cy="23" r="9" fill="#A50E0E" />
       </svg>
       <div style={{position: 'absolute', left: px, top: py - 130, transform: `translate(-50%,-100%) scale(${spring({frame: f - 10, fps, config: {damping: 14}})})`, transformOrigin: '50% 100%', opacity: interpolate(z, [0.15, 0.45], [1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}), background: '#fff', borderRadius: 18, padding: '12px 22px 14px', boxShadow: '0 8px 24px rgba(0,0,0,.2)', whiteSpace: 'nowrap'}}>
-        <div style={{fontFamily: 'DM Sans', fontWeight: 700, fontSize: 30, color: STYLE.ink}}>Projek Teres Tok Muda</div>
-        <div style={{fontFamily: 'DM Sans', fontWeight: 500, fontSize: 22, color: STYLE.sub}}>Jalan Benteng Kanan, Kapar</div>
+        <div style={{fontFamily: 'DM Sans', fontWeight: 700, fontSize: 30, color: STYLE.ink}}>{cfg.pinTitle}</div>
+        <div style={{fontFamily: 'DM Sans', fontWeight: 500, fontSize: 22, color: STYLE.sub}}>{cfg.pinSub}</div>
       </div>
 
       <div style={{position: 'absolute', top: 1200, left: 120, fontFamily: 'DM Sans', fontWeight: 600, fontSize: 26, color: STYLE.sub, background: 'rgba(241,243,244,.85)', padding: '4px 10px', borderRadius: 6}}>Data peta © OpenStreetMap contributors</div>

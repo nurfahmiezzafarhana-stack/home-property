@@ -6,6 +6,7 @@ import {DesignA} from './designs/DesignA';
 import {DesignB} from './designs/DesignB';
 import {DesignC} from './designs/DesignC';
 import {DesignD} from './designs/DesignD';
+import {MeruK1, MERU_FRAMES} from './meru/Design';
 import {K1Cinematic, K2PromoBold, K3LuxeGold, KAPAR_FRAMES} from './kapar/Designs';
 
 export const Root: React.FC = () => (
@@ -17,5 +18,6 @@ export const Root: React.FC = () => (
     <Composition id="Kapar-K1-Cinematic" component={K1Cinematic} durationInFrames={KAPAR_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} />
     <Composition id="Kapar-K2-PromoBold" component={K2PromoBold} durationInFrames={KAPAR_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} />
     <Composition id="Kapar-K3-LuxeGold" component={K3LuxeGold} durationInFrames={KAPAR_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} />
+    <Composition id="Meru-K1-Cinematic" component={MeruK1} durationInFrames={MERU_FRAMES} fps={FPS} width={WIDTH} height={HEIGHT} />
   </>
 );

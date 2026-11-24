@@ -41,7 +41,7 @@ export type Base = {id: string; dur: number; vo?: string; span?: number};
 export type Shot = Base &
   (
     | {kind: 'video'; src: 'drone1' | 'drone2'; from: number; rate: number; rot?: [number, number]; zoom?: [number, number]; x?: [number, number]}
-    | {kind: 'image'; zoom?: [number, number]; x?: [number, number]}
+    | {kind: 'image'; img?: string; zoom?: [number, number]; x?: [number, number]; y?: [number, number]}
     | {kind: 'map'}
   );
 

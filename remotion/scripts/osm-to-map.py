@@ -10,7 +10,9 @@ import json
 import math
 import sys
 
-CENTER = (101.3370514, 3.1324854)  # Jalan Benteng Kanan, Kapar (Nominatim)
+import os
+# project site (lon, lat); override with MAP_CENTER="lon,lat"
+CENTER = tuple(float(v) for v in os.environ.get('MAP_CENTER', '101.3370514,3.1324854').split(','))
 R = 6378137.0
 
 

@@ -160,7 +160,6 @@ const CtaK1: React.FC = () => {
         <div style={{...rise(f, 14, 20), display: 'inline-block', marginTop: 24, fontFamily: 'Montserrat', fontWeight: 900, fontSize: 42, color: '#1a1a1a', background: '#FFD27A', padding: '10px 28px', borderRadius: 999}}>Booking {project.booking} sahaja!</div>
         <div style={{...rise(f, 18, 16), fontFamily: 'Montserrat', fontWeight: 600, fontSize: 28, color: '#E8E8E8', marginTop: 24}}>Freehold · 4 Bilik · 2 Bilik Air</div>
         <div style={{...rise(f, 24, 20), marginTop: 46, fontFamily: 'Montserrat', fontWeight: 800, fontSize: 40, color: '#fff'}}>DM atau komen <span style={{color: '#1a1a1a', background: '#FFD27A', padding: '0 14px', borderRadius: 10}}>“NAK”</span></div>
-        <div style={{...rise(f, 26, 20), marginTop: 22, fontFamily: 'Montserrat', fontWeight: 700, fontSize: 26, letterSpacing: 5, color: '#FFD27A', textTransform: 'uppercase'}}>atau WhatsApp</div>
         <div style={{...rise(f, 27, 20), fontFamily: 'Montserrat', fontWeight: 900, fontSize: 76, color: W}}>{project.phone}</div>
         <div style={{...rise(f, 30, 16), fontFamily: 'Montserrat', fontWeight: 600, fontSize: 32, color: '#E8E8E8'}}>{project.agent}</div>
       </div>
@@ -314,7 +313,7 @@ const K2Overlay: React.FC<{id: string}> = ({id}) => {
               </div>
             </div>
             <div style={{transform: `scale(${spring({frame: f - 22, fps, config: {damping: 12}})})`, background: '#111', borderRadius: 30, padding: '20px 44px 26px', border: `6px solid ${Y}`, textAlign: 'center'}}>
-              <div style={{fontFamily: 'Poppins', fontWeight: 800, fontSize: 30, color: Y, letterSpacing: 3}}>WHATSAPP SEKARANG</div>
+              <div style={{fontFamily: 'Poppins', fontWeight: 800, fontSize: 30, color: Y, letterSpacing: 3}}>HUBUNGI SEKARANG</div>
               <div style={{fontFamily: 'Poppins', fontWeight: 900, fontSize: 70, color: '#fff'}}>{project.phone}</div>
               <div style={{fontFamily: 'Poppins', fontWeight: 600, fontSize: 30, color: '#ddd'}}>{project.agent}</div>
             </div>
@@ -485,7 +484,7 @@ const K3Overlay: React.FC<{id: string}> = ({id}) => {
               <div style={{...rise(f, 18, 14), fontFamily: 'Playfair Display', fontStyle: 'italic', fontSize: 40, color: GOLD, marginTop: 6}}>Booking {project.booking} sahaja</div>
               <div style={{...rise(f, 22, 14), fontFamily: 'Montserrat', fontWeight: 600, fontSize: 24, color: IVORY, marginTop: 14}}>Freehold · 4 Bilik · 2 Bilik Air · Siap Q1 2029</div>
               <div style={{height: 1, background: 'rgba(212,176,106,.5)', margin: '30px 40px 24px'}} />
-              <Cap t="WhatsApp · Daftar Sekarang" d={26} size={22} />
+              <Cap t="Daftar Sekarang" d={26} size={22} />
               <div style={{...rise(f, 29, 16), fontFamily: 'Playfair Display', fontWeight: 600, fontSize: 72, color: IVORY, marginTop: 6}}>{project.phone}</div>
               <div style={{...rise(f, 32, 14), fontFamily: 'Playfair Display', fontStyle: 'italic', fontSize: 32, color: '#CFC4AE'}}>{project.agent}</div>
             </div>

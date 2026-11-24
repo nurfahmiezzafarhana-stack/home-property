@@ -70,3 +70,9 @@ Skrip (dikemas dari teks yang diberi; captions ikut ayat ini):
 Suara: **AI sementara** (Meta MMS-TTS Bahasa Melayu `facebook/mms-tts-zlm`, lesen CC-BY-NC 4.0 — untuk preview;
 ganti dengan rakaman sendiri untuk post komersial). Jana semula: `HF_HUB_DISABLE_XET=1 python3 -I remotion/scripts/gen-vo.py`.
 Setiap babak dipanjangkan ikut ayatnya (video 38.1 s). Item pakej & spesifikasi muncul tepat bila disebut.
+
+## Projek Meru (Jalan Nenas, Meru, Klang) — `remotion/src/meru/`
+Gaya K1 Cinematic, 33.9 s, tiada voiceover (teks + SFX). Gambar: render (resolusi rendah 1225×772 — zoom dihadkan),
+luar rumah, ruang tamu/dapur, koridor, bilik air. Peta OpenStreetMap berpusat di Jalan Nenas, Taman Meru Impian 2
+(dipilih kerana jarak ke Klinik Kesihatan Meru / SMK Meru / Hospital Kapar sepadan dengan senarai).
+CTA: nombor telefon + nama sahaja (tiada teks WhatsApp) — juga dikemas kini untuk Kapar K1.

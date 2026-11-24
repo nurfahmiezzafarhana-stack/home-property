@@ -1,6 +1,7 @@
 """Collect road geometry from Nominatim (fallback when Overpass is unreachable).
 
-Usage: python3 -I scripts/nominatim-roads.py out.json
+Usage: python3 -I scripts/nominatim-roads.py out.json [queries.json]
+(queries.json: [[name, class, ref], ...]; defaults to the Kapar list)
 Searches each road name inside the Kapar–Shah Alam box, pages through results
 with exclude_place_ids and keeps every highway way's LineString. Output is
 Overpass-style JSON for scripts/osm-to-map.py. Respects Nominatim's 1 req/s
@@ -34,6 +35,9 @@ def get(params):
     with urllib.request.urlopen(req, timeout=40) as r:
         return json.load(r)
 
+
+if len(sys.argv) > 2:
+    QUERIES = [tuple(q) for q in json.load(open(sys.argv[2]))]
 
 out = []
 seen = set()
